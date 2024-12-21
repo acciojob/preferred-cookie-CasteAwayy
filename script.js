@@ -1,25 +1,25 @@
-"use strict";
 
 const form = document.querySelector("form");
 const inputFont = document.querySelector('[type="number"]');
 const inputColor = document.querySelector('[type="color"]');
 
-if (localStorage.getItem("preference")) {
-  const preference = JSON.parse(localStorage.getItem("preference"));
-  const { fontSize, fontColor } = preference;
-  inputFont.value = fontSize;
-  inputColor.value = fontColor;
-  document.documentElement.style.setProperty("--fontsize", fontSize + "px");
-  document.documentElement.style.setProperty("--fontcolor", fontColor);
+if (document.cookie) {
+  let cookie = document.cookie;
+  cookie = cookie.split("; ").join("=").split("=");
+  const fontsize = parseInt(cookie[1]);
+  const fontcolor = cookie[3];
+
+  inputFont.value = fontsize;
+  inputColor.value = fontcolor;
+
+  document.documentElement.style.setProperty("--fontsize", fontsize + "px");
+  document.documentElement.style.setProperty("--fontcolor", fontcolor);
 }
 form.onsubmit = function (e) {
-  e.preventDefault();
   const formData = new FormData(this);
   const fontSize = formData.get("fontsize");
   const fontColor = formData.get("fontcolor");
-
-  localStorage.setItem(
-    "preference",
-    JSON.stringify({ fontSize: fontSize, fontColor: fontColor })
-  );
+  document.cookie = `fontsize=${fontSize}`;
+  document.cookie = `fontcolor=${fontColor}`;
+  e.preventDefault();
 };
